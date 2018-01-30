@@ -34,7 +34,7 @@ def clean_lines(txt, min_char_ratio=0.9, min_length=50):
     for line in txt.split(u"\n"):
         line = TAG.sub(u"", line.strip())
         if line and line[0].isalnum() and len(line) > min_length:
-            char_ratio = float(sum(ch.islower() for ch in line)) / sum(not ch.isspace() for ch in line)
+            char_ratio = float(sum(ch.isalpha() for ch in line)) / sum(not ch.isspace() for ch in line)
             if char_ratio > min_char_ratio:
                 yield line
 
