@@ -16,8 +16,7 @@ TABLE_PREFIX = re.compile(u"\s*(\{\))|(\|)|(\|\})")
 TAG = re.compile(u"<[^<>]+>")
 
 
-def tokenize_sentence_split(text, nlp):
-    tokenizer = nlp.tokenizer
+def tokenize_sentence_split(text, tokenizer):
     for line in text.split("\n"):
         tok_acc = []
         for tok in tokenizer(line):
@@ -43,12 +42,12 @@ def pre_filter(content):
     return "\n".join([line for line in content.split(u"\n") if not TABLE_PREFIX.match(line)])
 
 
-def extract_text(content, nlp, cleaned):
+def extract_text(content, tokenizer, cleaned):
     sentences = []
     content = strip_markup(pre_filter(content))
     lines = clean_lines(content) if cleaned else content.split("\n")
     for line in lines:
-        for sent in tokenize_sentence_split(line, nlp):
+        for sent in tokenize_sentence_split(line, tokenizer):
             sentences.append(sent)
     return u"\n".join(sentences)
 
@@ -62,9 +61,9 @@ def write_file(id, out_dir, text_content, title):
 
 def main(dump_path, out_dir, lang, cleaned=True):
     reader = WikiReader(dump_path)
-    nlp = spacy.load(lang, parser=None, tagger=None)
+    tokenizer = spacy.util.get_lang_class(lang).Defaults.create_tokenizer()
     for id, title, content in tqdm(reader):
-        text_content = extract_text(content, nlp, cleaned)
+        text_content = extract_text(content, tokenizer, cleaned)
         if text_content:
             write_file(id, out_dir, text_content, title)
 
