@@ -90,7 +90,7 @@ def build_vocab(language, corpus_files_root):
 
 def init_vocab(language, model_dir, word_freq_path, word2vec_model_path, brown_out_dir):
     local(
-        "python -m spacy init-model {lang} ./{dir}/vocab {freq} -c {brown}/paths -v {w2v}.bz2".format(
+        "python -m spacy init-model {lang} ./{dir}/vocab {freq} -c {brown}/paths -v {w2v}".format(
             lang=language,
             dir=model_dir,
             freq=word_freq_path,
@@ -119,7 +119,7 @@ def word2vec(corpus_path, out_path, dim=150, threads=4, min_count=10, cbow=0):
             cbow=cbow
         )
     )
-    local("bzip2 {}".format(out_path), capture=True)
+    # local("bzip2 {}".format(out_path), capture=True)
     # local(
     #     "python training/word_vectors.py {lang} {in_dir} {out_file} -n {threads} -d {dim}".format(
     #         dim=dim,
